@@ -7,6 +7,7 @@ import WorkspaceSwitcher from './components-root/WorkspaceSwitcher.jsx';
 import ExportWizard from './components-root/ExportWizard.jsx';
 import RespectDashboard from './components-root/RespectDashboard.jsx';
 import EmpowermentDashboard from './components-root/EmpowermentDashboard.jsx';
+import AIWritingTools from './pages/AIWritingTools.jsx';
 
 function HomePage() {
   return (
@@ -33,11 +34,15 @@ function HomePage() {
         <p style={{fontSize: "1.1em", color: "#473363", marginBottom: 19}}>
           A modular suite for writers and publishers — instantly analyze, transform, audit, and ethically publish any story.
         </p>
-        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 28}}>
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 28}}>
           <Link to="/forge" style={{
             textDecoration: "none", background: "#2b68ac", color: "#fff", padding: "18px 24px", borderRadius: "12px",
             fontSize: "1.1em", fontWeight: 600, textAlign: "center", boxShadow: "0 4px 20px #bee7ff50"
           }}>📖 Book Forge</Link>
+          <Link to="/ai-tools" style={{
+            textDecoration: "none", background: "#ff6b35", color: "#fff", padding: "18px 24px", borderRadius: "12px",
+            fontSize: "1.1em", fontWeight: 600, textAlign: "center", boxShadow: "0 4px 20px #ff6b3550"
+          }}>🤖 AI Writing Tools</Link>
           <Link to="/export" style={{
             textDecoration: "none", background: "#34ad81", color: "#fff", padding: "18px 24px", borderRadius: "12px",
             fontSize: "1.1em", fontWeight: 600, textAlign: "center", boxShadow: "0 4px 20px #34ad8150"
@@ -80,6 +85,7 @@ function NavigationBar() {
       </Link>
       <Link to="/" style={navStyle(isActive('/'))}>Home</Link>
       <Link to="/forge" style={navStyle(isActive('/forge'))}>Forge</Link>
+      <Link to="/ai-tools" style={navStyle(isActive('/ai-tools'))}>AI Tools</Link>
       <Link to="/export" style={navStyle(isActive('/export'))}>Export</Link>
       <Link to="/respect" style={navStyle(isActive('/respect'))}>Respect</Link>
       <Link to="/empowerment" style={navStyle(isActive('/empowerment'))}>Empowerment</Link>
@@ -112,6 +118,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/forge" element={<MasterForgeModule />} />
+            <Route path="/ai-tools" element={<AIWritingTools />} />
             <Route path="/export" element={<ExportWizard />} />
             <Route path="/respect" element={<RespectDashboard />} />
             <Route path="/empowerment" element={<EmpowermentDashboard />} />
