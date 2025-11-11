@@ -1,0 +1,22 @@
+{
+  "short_name": "AuthorSuite",
+  "name": "Author Suite Pro",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#19232a",
+  "theme_color": "#2587f4",
+  "orientation": "any",
+  "description": "The most powerful AI-authoring, worldbuilding, and outlining suite."
+}
