@@ -1,14 +1,40 @@
 {
+  "name": "book-publish-forge",
+  "version": "1.0.0",
+  "description": "A modular, ethical, all-in-one desktop and online suite for writing, publishing, and managing books",
+  "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "npm run build && cp -r build/* /your/web/host/path/",
     "test": "react-scripts test",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    // ...other deps as listed above
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
