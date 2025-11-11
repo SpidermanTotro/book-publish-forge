@@ -14,7 +14,7 @@ function makeNaughty(text) {
 function makeNormal(text) {
   return text.replace(/\b(nipple|erect|orgasm|climax|panties|thrust)\b/gi, "[redacted]")
     .replace(/\bsensual|sensually|sultry|seduce(d)?\b/gi, "gentle")
-    .replace(/[\.\!]{2,}/g, ".");
+    .replace(/[.!]{2,}/g, ".");
 }
 function mergeNaughtyNormal(orig, naughty, clean) {
   // Example: merge preview. In production: true diff view.
@@ -31,7 +31,7 @@ export default function NaughtyConverter({ doc, setMode, mode, onConvert }) {
     if (!doc) return;
     const found = classifyDoc(doc);
     setMode(found);
-  }, [doc]);
+  }, [doc, setMode]);
   function handleConvert(type) {
     if (type === "naughtify") {
       const naughtyVersion = makeNaughty(doc);
