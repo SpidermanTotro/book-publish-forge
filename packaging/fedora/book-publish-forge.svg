@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Book Publish Forge">
+  <rect width="256" height="256" rx="32" fill="#1f2937" />
+  <rect x="56" y="52" width="144" height="152" rx="12" fill="#f9fafb" />
+  <rect x="72" y="72" width="112" height="8" fill="#111827" />
+  <rect x="72" y="92" width="96" height="8" fill="#4b5563" />
+  <rect x="72" y="112" width="104" height="8" fill="#4b5563" />
+  <rect x="72" y="132" width="88" height="8" fill="#4b5563" />
+  <rect x="72" y="152" width="112" height="8" fill="#4b5563" />
+  <rect x="72" y="172" width="96" height="8" fill="#4b5563" />
+  <circle cx="188" cy="76" r="10" fill="#f97316" />
+</svg>
