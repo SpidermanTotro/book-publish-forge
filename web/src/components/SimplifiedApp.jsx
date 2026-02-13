@@ -1,56 +1,42 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import Navigation from "./components/Navigation";
-import Home from "./components/Home";
-import Dashboard from "./components/Dashboard";
-import MasterForgeModule from "./components/MasterForgeModule";
+import Navigation from "./Navigation";
+import Home from "./Home";
+import Dashboard from "./Dashboard";
+import MasterForgeModule from "./MasterForgeModule";
 
-// Import additional components
-import AuditLog from "./components/AuditLog";
-import EthicsReviewPanel from "./components/EthicsReviewPanel";
-import ExportWizard from "./components/ExportWizard";
-import AdminReviewPanel from "./components/AdminReviewPanel";
-import ConsentTakedownCenter from "./components/ConsentTakedownCenter";
-import LegalRegionBlocker from "./components/LegalRegionBlocker";
-import RespectDashboard from "./components/RespectDashboard";
-import EmpowermentDashboard from "./components/EmpowermentDashboard";
+// Import core components that don't require extra dependencies
+import AuditLog from "./AuditLog";
+import EthicsReviewPanel from "./EthicsReviewPanel";
+import ExportWizard from "./ExportWizard";
+import AdminReviewPanel from "./AdminReviewPanel";
+import ConsentTakedownCenter from "./ConsentTakedownCenter";
+import LegalRegionBlocker from "./LegalRegionBlocker";
+import RespectDashboard from "./RespectDashboard";
+import EmpowermentDashboard from "./EmpowermentDashboard";
 
-// AI Components
-import AIHelperPanel from "./components/ai/AIHelperPanel";
-import AIBeatSceneGeneratorPanel from "./components/ai/AIBeatSceneGeneratorPanel";
-import AIPlotConsistencyAgent from "./components/ai/AIPlotConsistencyAgent";
-import CorrectionEnginePanel from "./components/ai/CorrectionEnginePanel";
-import CompanionPanel from "./components/ai/CompanionPanel";
-import InlineAISuggestPanel from "./components/ai/InlineAISuggestPanel";
-
-// Collaboration Components
-import CollaboratorsPanel from "./components/collab/CollaboratorsPanel";
-import WritingRoomChatPanel from "./components/collab/WritingRoomChatPanel";
-import RevisionHistoryPanel from "./components/collab/RevisionHistoryPanel";
-
-// Export Components
-import ExportPanel from "./components/export/ExportPanel";
-import ExportToCloudPanel from "./components/cloud/ExportToCloudPanel";
+// AI Components (most are lightweight)
+import AIHelperPanel from "./ai/AIHelperPanel";
+import AIBeatSceneGeneratorPanel from "./ai/AIBeatSceneGeneratorPanel";
+import CorrectionEnginePanel from "./ai/CorrectionEnginePanel";
+import CompanionPanel from "./ai/CompanionPanel";
 
 // Magazine Components
-import MagazineDashboard from "./components/magazine/MagazineDashboard";
-import ProofFinderPanel from "./components/magazine/ProofFinderPanel";
-import PaparazziEthicsCheckPanel from "./components/magazine/PaparazziEthicsCheckPanel";
+import MagazineDashboard from "./magazine/MagazineDashboard";
+import PaparazziEthicsCheckPanel from "./magazine/PaparazziEthicsCheckPanel";
 
 // Plugin Components
-import PluginGalleryPanel from "./components/plugins/PluginGalleryPanel";
-import PluginMarketPanel from "./components/plugins/PluginMarketPanel";
-import PluginWizardPanel from "./components/plugins/PluginWizardPanel";
+import PluginGalleryPanel from "./plugins/PluginGalleryPanel";
+import PluginMarketPanel from "./plugins/PluginMarketPanel";
 
 // Dashboard Components
-import MultiProjectDashboard from "./components/dashboard/MultiProjectDashboard";
-import CloudSyncPanel from "./components/dashboard/CloudSyncPanel";
+import MultiProjectDashboard from "./dashboard/MultiProjectDashboard";
+import CloudSyncPanel from "./dashboard/CloudSyncPanel";
 
 // Other Components
-import BoardOutlinePanel from "./components/outline/BoardOutlinePanel";
-import TimelineVisualizerPanel from "./components/timeline/TimelineVisualizerPanel";
-import WorldGraphPanel from "./components/world/WorldGraphPanel";
-import StatsDashboardPanel from "./components/stats/StatsDashboardPanel";
+import BoardOutlinePanel from "./outline/BoardOutlinePanel";
+import TimelineVisualizerPanel from "./timeline/TimelineVisualizerPanel";
+import StatsDashboardPanel from "./stats/StatsDashboardPanel";
 
 // Wrapper for standalone components
 function PageWrapper({ children, title }) {
@@ -75,7 +61,31 @@ function PageWrapper({ children, title }) {
   );
 }
 
-function App() {
+// Placeholder for components requiring special dependencies
+function ComingSoon({ feature }) {
+  return (
+    <PageWrapper title={feature}>
+      <div style={{
+        textAlign: "center",
+        padding: "60px 20px",
+        color: "#6b7280"
+      }}>
+        <div style={{ fontSize: "4em", marginBottom: 20 }}>🚧</div>
+        <h2 style={{ color: "#4c1d95" }}>Coming Soon</h2>
+        <p style={{ fontSize: "1.1em" }}>
+          This feature requires additional dependencies and will be available after installation.
+        </p>
+        <p style={{ fontSize: "0.9em", marginTop: 20 }}>
+          Run <code style={{ background: "#f3f4f6", padding: "4px 8px", borderRadius: 4 }}>
+            npm install
+          </code> in the web directory to enable all features.
+        </p>
+      </div>
+    </PageWrapper>
+  );
+}
+
+function SimplifiedApp() {
   return (
     <Router>
       <div style={{ minHeight: "100vh" }}>
@@ -143,11 +153,7 @@ function App() {
                     <AIBeatSceneGeneratorPanel />
                   </PageWrapper>
                 } />
-                <Route path="/ai/plot-consistency" element={
-                  <PageWrapper title="AI Plot Consistency">
-                    <AIPlotConsistencyAgent />
-                  </PageWrapper>
-                } />
+                <Route path="/ai/plot-consistency" element={<ComingSoon feature="AI Plot Consistency" />} />
                 <Route path="/ai/corrections" element={
                   <PageWrapper title="Correction Engine">
                     <CorrectionEnginePanel />
@@ -158,28 +164,12 @@ function App() {
                     <CompanionPanel />
                   </PageWrapper>
                 } />
-                <Route path="/ai/inline" element={
-                  <PageWrapper title="Inline AI Suggestions">
-                    <InlineAISuggestPanel />
-                  </PageWrapper>
-                } />
+                <Route path="/ai/inline" element={<ComingSoon feature="Inline AI Suggestions" />} />
                 
-                {/* Collaboration */}
-                <Route path="/collab/team" element={
-                  <PageWrapper title="Team Collaborators">
-                    <CollaboratorsPanel />
-                  </PageWrapper>
-                } />
-                <Route path="/collab/chat" element={
-                  <PageWrapper title="Writing Room Chat">
-                    <WritingRoomChatPanel />
-                  </PageWrapper>
-                } />
-                <Route path="/collab/revisions" element={
-                  <PageWrapper title="Revision History">
-                    <RevisionHistoryPanel />
-                  </PageWrapper>
-                } />
+                {/* Collaboration - requires yjs */}
+                <Route path="/collab/team" element={<ComingSoon feature="Team Collaborators" />} />
+                <Route path="/collab/chat" element={<ComingSoon feature="Writing Room Chat" />} />
+                <Route path="/collab/revisions" element={<ComingSoon feature="Revision History" />} />
                 
                 {/* Export & Publishing */}
                 <Route path="/export" element={
@@ -187,16 +177,8 @@ function App() {
                     <ExportWizard />
                   </PageWrapper>
                 } />
-                <Route path="/export/panel" element={
-                  <PageWrapper title="Export Panel">
-                    <ExportPanel />
-                  </PageWrapper>
-                } />
-                <Route path="/export/cloud" element={
-                  <PageWrapper title="Export to Cloud">
-                    <ExportToCloudPanel />
-                  </PageWrapper>
-                } />
+                <Route path="/export/panel" element={<ComingSoon feature="Export Panel" />} />
+                <Route path="/export/cloud" element={<ComingSoon feature="Export to Cloud" />} />
                 
                 {/* Magazine Tools */}
                 <Route path="/magazine" element={
@@ -204,11 +186,7 @@ function App() {
                     <MagazineDashboard />
                   </PageWrapper>
                 } />
-                <Route path="/magazine/proof" element={
-                  <PageWrapper title="Proof Finder">
-                    <ProofFinderPanel />
-                  </PageWrapper>
-                } />
+                <Route path="/magazine/proof" element={<ComingSoon feature="Proof Finder" />} />
                 <Route path="/magazine/ethics" element={
                   <PageWrapper title="Paparazzi Ethics Check">
                     <PaparazziEthicsCheckPanel />
@@ -226,11 +204,7 @@ function App() {
                     <PluginMarketPanel />
                   </PageWrapper>
                 } />
-                <Route path="/plugins/wizard" element={
-                  <PageWrapper title="Plugin Creation Wizard">
-                    <PluginWizardPanel />
-                  </PageWrapper>
-                } />
+                <Route path="/plugins/wizard" element={<ComingSoon feature="Plugin Creation Wizard" />} />
                 
                 {/* Project Management */}
                 <Route path="/projects" element={
@@ -255,11 +229,7 @@ function App() {
                     <TimelineVisualizerPanel />
                   </PageWrapper>
                 } />
-                <Route path="/world" element={
-                  <PageWrapper title="World Builder">
-                    <WorldGraphPanel />
-                  </PageWrapper>
-                } />
+                <Route path="/world" element={<ComingSoon feature="World Builder" />} />
                 <Route path="/stats" element={
                   <PageWrapper title="Writing Statistics">
                     <StatsDashboardPanel />
@@ -274,4 +244,4 @@ function App() {
   );
 }
 
-export default App;
+export default SimplifiedApp;
