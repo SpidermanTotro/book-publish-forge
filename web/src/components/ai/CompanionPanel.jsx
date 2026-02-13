@@ -11,10 +11,10 @@ export default function CompanionPanel({ manuscript, isOnline, onOfflinePrompt }
 
   useEffect(() => {
     if (inactivity > 6 && !tip) {
-      setTip("You’ve been away—want a quick warm-up prompt or scene review?");
+      setTip("You've been away—want a quick warm-up prompt or scene review?");
       if(onOfflinePrompt) onOfflinePrompt();
     }
-  }, [inactivity]);
+  }, [inactivity, tip, onOfflinePrompt]);
 
   function aiAssist() {
     setTip(isOnline

@@ -1,5 +1,6 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "./ErrorBoundary";
 import Navigation from "./Navigation";
 import Home from "./Home";
 import Dashboard from "./Dashboard";
@@ -87,11 +88,12 @@ function ComingSoon({ feature }) {
 
 function SimplifiedApp() {
   return (
-    <Router>
-      <div style={{ minHeight: "100vh" }}>
-        <Routes>
-          {/* Home route - no navigation */}
-          <Route path="/" element={<Home />} />
+    <ErrorBoundary>
+      <Router>
+        <div style={{ minHeight: "100vh" }}>
+          <Routes>
+            {/* Home route - no navigation */}
+            <Route path="/" element={<Home />} />
           
           {/* All other routes include navigation */}
           <Route path="*" element={
@@ -241,6 +243,7 @@ function SimplifiedApp() {
         </Routes>
       </div>
     </Router>
+    </ErrorBoundary>
   );
 }
 
