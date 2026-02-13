@@ -1,20 +1,10 @@
 import React, { useState } from "react";
 
 export default function AuditLog({ initialEntries = [] }) {
-  const [entries, setEntries] = useState(initialEntries);
+  const [entries] = useState(initialEntries);
 
-  // Add a new log entry
-  function addLog(action, details) {
-    setEntries(prev => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        time: new Date(),
-        action,
-        details
-      }
-    ]);
-  }
+  // Function to add log entries (can be used by parent components)
+  // Removed local addLog function as entries are now managed externally
 
   return (
     <div style={{
@@ -49,18 +39,7 @@ export default function AuditLog({ initialEntries = [] }) {
           ))}
         </tbody>
       </table>
-      {/* Example controls—replace these with real calls from main app logic */}
-      <div style={{marginTop:18}}>
-        <button onClick={() => addLog("Consent Revoked", "Model X withdrew consent for Story Y")}>
-          Demo: Revoke Consent
-        </button>
-        <button style={{marginLeft:12}} onClick={() => addLog("Takedown Completed", "Article Z removed for privacy violation")}>
-          Demo: Takedown
-        </button>
-        <button style={{marginLeft:12}} onClick={() => addLog("Respect Passed", "Book draft cleared all ethics checks")}>
-          Demo: Pass Respect
-        </button>
-      </div>
+      {/* Real audit actions would be triggered by parent components */}
     </div>
   );
 }

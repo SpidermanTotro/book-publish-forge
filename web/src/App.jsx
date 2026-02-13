@@ -1,5 +1,6 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Navigation from "./components/Navigation";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
@@ -77,11 +78,12 @@ function PageWrapper({ children, title }) {
 
 function App() {
   return (
-    <Router>
-      <div style={{ minHeight: "100vh" }}>
-        <Routes>
-          {/* Home route - no navigation */}
-          <Route path="/" element={<Home />} />
+    <ErrorBoundary>
+      <Router>
+        <div style={{ minHeight: "100vh" }}>
+          <Routes>
+            {/* Home route - no navigation */}
+            <Route path="/" element={<Home />} />
           
           {/* All other routes include navigation */}
           <Route path="*" element={
@@ -271,6 +273,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </ErrorBoundary>
   );
 }
 

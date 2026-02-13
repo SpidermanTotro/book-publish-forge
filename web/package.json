@@ -11,15 +11,15 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-force-graph-2d": "^1.29.1",
     "react-router-dom": "^6.20.0",
     "react-scripts": "5.0.1",
-    "yjs": "^13.6.0",
-    "y-webrtc": "^10.2.5",
-    "jszip": "^3.10.1",
-    "file-saver": "^2.0.5",
-    "react-force-graph-2d": "^1.25.4"
+    "y-webrtc": "^10.3.0",
+    "yjs": "^13.6.29"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
