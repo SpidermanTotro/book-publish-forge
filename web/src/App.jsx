@@ -4,7 +4,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Navigation from "./components/Navigation";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
-import MasterForgeModule from "./components/MasterForgeModule";
+import MasterForgeModuleAI from "./components/MasterForgeModuleAI";
+import AISettings from "./components/AISettings";
 
 // Import additional components
 import AuditLog from "./components/AuditLog";
@@ -93,9 +94,16 @@ function App() {
                 {/* Dashboard */}
                 <Route path="/dashboard" element={<Dashboard />} />
                 
-                {/* Main Forge Pages */}
-                <Route path="/book" element={<MasterForgeModule />} />
-                <Route path="/erotic" element={<MasterForgeModule />} />
+                {/* AI Settings */}
+                <Route path="/settings/ai" element={
+                  <PageWrapper title="AI Configuration">
+                    <AISettings />
+                  </PageWrapper>
+                } />
+                
+                {/* Main Forge Pages - REAL AI POWERED */}
+                <Route path="/book" element={<MasterForgeModuleAI />} />
+                <Route path="/erotic" element={<MasterForgeModuleAI />} />
                 
                 {/* Ethics & Compliance */}
                 <Route path="/ethics" element={

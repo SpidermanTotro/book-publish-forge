@@ -66,6 +66,12 @@ export default function Navigation() {
         { name: "Plugin Wizard", path: "/plugins/wizard" },
       ]
     },
+    {
+      title: "⚙️ Settings",
+      items: [
+        { name: "AI Configuration", path: "/settings/ai" },
+      ]
+    },
   ];
 
   return (
