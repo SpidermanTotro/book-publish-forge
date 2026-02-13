@@ -24,7 +24,7 @@ function analyzeContent(text) {
 }
 
 export default function EthicsReviewPanel({ content, onProceed }) {
-  const [verdicts, setVerdicts] = useState(analyzeContent(content));
+  const [verdicts] = useState(analyzeContent(content));
 
   return (
     <div style={{
