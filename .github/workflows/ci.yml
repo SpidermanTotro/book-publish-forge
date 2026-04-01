@@ -10,6 +10,8 @@ jobs:
   web-lint-build:
     name: Web – Lint & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: web
@@ -36,6 +38,8 @@ jobs:
   python-lint:
     name: Python – Lint (flake8)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +58,8 @@ jobs:
   shell-lint:
     name: Shell – Lint (shellcheck)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4

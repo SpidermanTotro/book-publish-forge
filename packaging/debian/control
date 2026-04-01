@@ -1,0 +1,15 @@
+Package: book-publish-forge
+Version: ${VERSION}
+Section: text
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.10), python3-tk
+Recommends: ollama
+Maintainer: Book Publish Forge Team <noreply@example.com>
+Description: Book Publish Forge — AI writing studio for Linux
+ A modular desktop writing suite that integrates with local LLM tools
+ (Ollama) and cover-art generators (Stable Diffusion WebUI).
+ .
+ Features include a chapter/scene binder, AI writing assistant, word-count
+ goal tracking, focus mode, content-mode detection, ethics review, and
+ multi-format manuscript export (.txt, .md, .html).

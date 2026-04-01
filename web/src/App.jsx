@@ -1,32 +1,59 @@
 import { useState } from 'react'
 import './App.css'
-import AIAgentPanel from './ai/AIAgentPanel.jsx'
+import AIAgentPanel            from './ai/AIAgentPanel.jsx'
 import AIBeatSceneGeneratorPanel from './ai/AIBeatSceneGeneratorPanel.jsx'
-import AIHelperPanel from './ai/AIHelperPanel.jsx'
-import AIPlotConsistencyAgent from './ai/AIPlotConsistencyAgent.jsx'
-import CompanionPanel from './ai/CompanionPanel.jsx'
-import CorrectionEnginePanel from './ai/CorrectionEnginePanel.jsx'
+import AIHelperPanel           from './ai/AIHelperPanel.jsx'
+import AIPlotConsistencyAgent  from './ai/AIPlotConsistencyAgent.jsx'
+import CompanionPanel          from './ai/CompanionPanel.jsx'
+import CorrectionEnginePanel   from './ai/CorrectionEnginePanel.jsx'
 import ExtractAuthorStyleAgent from './ai/ExtractAuthorStyleAgent.jsx'
-import InlineAISuggestPanel from './ai/InlineAISuggestPanel.jsx'
-import SequelGeneratorPanel from './ai/SequelGeneratorPanel.jsx'
-import TurnBasedCoWritePanel from './ai/TurnBasedCoWritePanel.jsx'
+import InlineAISuggestPanel    from './ai/InlineAISuggestPanel.jsx'
+import SequelGeneratorPanel    from './ai/SequelGeneratorPanel.jsx'
+import TurnBasedCoWritePanel   from './ai/TurnBasedCoWritePanel.jsx'
+// Writing tools
+import StoryBoardPanel   from './writing/StoryBoardPanel.jsx'
+import TimelinePanel     from './writing/TimelinePanel.jsx'
+import StoryMapPanel     from './writing/StoryMapPanel.jsx'
+import ResearchPanel     from './writing/ResearchPanel.jsx'
+import StatsPanel        from './writing/StatsPanel.jsx'
+import WritingCoachPanel from './writing/WritingCoachPanel.jsx'
+import CollabPanel       from './writing/CollabPanel.jsx'
 
-const TOOLS = [
-  { id: 'beat',       label: 'Beat Generator',     icon: '🎬', component: AIBeatSceneGeneratorPanel },
-  { id: 'helper',     label: 'Writing Helper',      icon: '🪄', component: AIHelperPanel },
-  { id: 'inline',     label: 'Inline Suggestions',  icon: '💡', component: InlineAISuggestPanel },
-  { id: 'cowrite',    label: 'Co-Writing',          icon: '✍️', component: TurnBasedCoWritePanel },
-  { id: 'agents',     label: 'Proofreading Agents', icon: '🔍', component: AIAgentPanel },
-  { id: 'correction', label: 'Correction Engines',  icon: '⚙️', component: CorrectionEnginePanel },
-  { id: 'plot',       label: 'Plot Checker',        icon: '🔎', component: AIPlotConsistencyAgent },
-  { id: 'style',      label: 'Style Extractor',     icon: '🖊️', component: ExtractAuthorStyleAgent },
-  { id: 'sequel',     label: 'Sequel Generator',    icon: '📖', component: SequelGeneratorPanel },
-  { id: 'companion',  label: 'AI Companion',        icon: '🤝', component: CompanionPanel },
+const TOOL_GROUPS = [
+  {
+    label: 'AI Writing Tools',
+    tools: [
+      { id: 'beat',       label: 'Beat Generator',     icon: '🎬', component: AIBeatSceneGeneratorPanel },
+      { id: 'helper',     label: 'Writing Helper',      icon: '🪄', component: AIHelperPanel },
+      { id: 'inline',     label: 'Inline Suggestions',  icon: '💡', component: InlineAISuggestPanel },
+      { id: 'cowrite',    label: 'Co-Writing',          icon: '✍️', component: TurnBasedCoWritePanel },
+      { id: 'agents',     label: 'Proofreading Agents', icon: '🔍', component: AIAgentPanel },
+      { id: 'correction', label: 'Correction Engines',  icon: '⚙️', component: CorrectionEnginePanel },
+      { id: 'plot',       label: 'Plot Checker',        icon: '🔎', component: AIPlotConsistencyAgent },
+      { id: 'style',      label: 'Style Extractor',     icon: '🖊️', component: ExtractAuthorStyleAgent },
+      { id: 'sequel',     label: 'Sequel Generator',    icon: '📖', component: SequelGeneratorPanel },
+      { id: 'companion',  label: 'AI Companion',        icon: '🤝', component: CompanionPanel },
+    ],
+  },
+  {
+    label: 'Writing & Planning',
+    tools: [
+      { id: 'board',    label: 'Story Board',     icon: '🗂️', component: StoryBoardPanel },
+      { id: 'timeline', label: 'Scene Timeline',  icon: '📅', component: TimelinePanel },
+      { id: 'storymap', label: 'AI Story Map',    icon: '🗺️', component: StoryMapPanel },
+      { id: 'research', label: 'Research Notes',  icon: '🔬', component: ResearchPanel },
+      { id: 'stats',    label: 'Writing Stats',   icon: '📊', component: StatsPanel },
+      { id: 'coach',    label: 'Writing Coach',   icon: '🎓', component: WritingCoachPanel },
+      { id: 'collab',   label: 'Live Collab',     icon: '🤝', component: CollabPanel },
+    ],
+  },
 ]
 
+const ALL_TOOLS = TOOL_GROUPS.flatMap(g => g.tools)
+
 export default function App() {
-  const [activeId, setActiveId]     = useState('beat')
-  const [theme, setTheme]           = useState('light')
+  const [activeId,    setActiveId]    = useState('beat')
+  const [theme,       setTheme]       = useState('light')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   function toggleTheme() {
@@ -35,7 +62,12 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', next)
   }
 
-  const ActiveTool = TOOLS.find(t => t.id === activeId)?.component ?? null
+  function selectTool(id) {
+    setActiveId(id)
+    setSidebarOpen(false)
+  }
+
+  const ActiveTool = ALL_TOOLS.find(t => t.id === activeId)?.component ?? null
 
   return (
     <div className="app-layout">
@@ -60,21 +92,25 @@ export default function App() {
 
       <div className="app-body">
         {/* Sidebar */}
-        <nav className={`app-sidebar${sidebarOpen ? ' app-sidebar--open' : ''}`} aria-label="AI Tools">
-          <div className="app-sidebar__label">AI Writing Tools</div>
-          <ul className="app-sidebar__list">
-            {TOOLS.map(tool => (
-              <li key={tool.id}>
-                <button
-                  className={`app-sidebar__item${activeId === tool.id ? ' app-sidebar__item--active' : ''}`}
-                  onClick={() => { setActiveId(tool.id); setSidebarOpen(false) }}
-                >
-                  <span className="app-sidebar__item-icon" aria-hidden="true">{tool.icon}</span>
-                  <span className="app-sidebar__item-label">{tool.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        <nav className={`app-sidebar${sidebarOpen ? ' app-sidebar--open' : ''}`} aria-label="Tools">
+          {TOOL_GROUPS.map(group => (
+            <div key={group.label} className="app-sidebar__group">
+              <div className="app-sidebar__label">{group.label}</div>
+              <ul className="app-sidebar__list">
+                {group.tools.map(tool => (
+                  <li key={tool.id}>
+                    <button
+                      className={`app-sidebar__item${activeId === tool.id ? ' app-sidebar__item--active' : ''}`}
+                      onClick={() => selectTool(tool.id)}
+                    >
+                      <span className="app-sidebar__item-icon" aria-hidden="true">{tool.icon}</span>
+                      <span className="app-sidebar__item-label">{tool.label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </nav>
 
         {/* Backdrop for mobile */}
