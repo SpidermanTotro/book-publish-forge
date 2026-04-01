@@ -1,14 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AIToolShell from '../shared/AIToolShell.jsx'
 
 const AI_DEMO = `[AI's Next Section]\n\nThe adventure continues with a twist: as the doors swing open, the protagonist doesn't find the empty chamber they expected — instead, a figure sits at the far end of the long table, face obscured, hands folded, waiting as if they'd known the arrival time all along.`
 
 export default function TurnBasedCoWritePanel({ text = '', onNewText, context: _context = {} }) {
-  const [mode, setMode]       = useState('human')
-  const [aiText, setAiText]   = useState('')
-  const [output, setOutput]   = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState(null)
+  const [mode, setMode]         = useState('human')
+  const [textInput, setTextInput] = useState(text)
+  const [aiText, setAiText]     = useState('')
+  const [output, setOutput]     = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
+
+  // Keep local draft in sync with the editor's text
+  useEffect(() => { setTextInput(text) }, [text])
 
   async function aiWrite() {
     setMode('ai-thinking'); setAiText(''); setLoading(true); setError(null)
@@ -49,7 +53,7 @@ export default function TurnBasedCoWritePanel({ text = '', onNewText, context: _
   )
 
   const extraActions = mode === 'ai-review' ? (
-    <button className="btn btn--secondary btn--sm" onClick={acceptAI}>✓ Accept AI Section</button>
+    <button className="btn btn--secondary btn--sm" onClick={acceptAI}>✓ Insert into Editor</button>
   ) : null
 
   return (
@@ -79,7 +83,8 @@ export default function TurnBasedCoWritePanel({ text = '', onNewText, context: _
           <textarea
             className="field__textarea"
             rows={5}
-            defaultValue={text}
+            value={textInput}
+            onChange={e => setTextInput(e.target.value)}
             placeholder="Write your section here, then hand off to the AI…"
           />
         </div>

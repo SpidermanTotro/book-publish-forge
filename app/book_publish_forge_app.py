@@ -90,6 +90,25 @@ class BookPublishForgeApp(tk.Tk):
         style.configure("Card.TLabelframe.Label", font=("Segoe UI", 11, "bold"))
 
     def _build_ui(self):
+        # ── Menu bar ─────────────────────────────────────────────────
+        menubar = tk.Menu(self)
+        file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu.add_command(label="New Project",        command=self._project_new,       accelerator="Ctrl+N")
+        file_menu.add_command(label="Open Project…",      command=self._project_open,      accelerator="Ctrl+O")
+        file_menu.add_command(label="Save Project",       command=self._project_save,      accelerator="Ctrl+S")
+        file_menu.add_command(label="Save Project As…",   command=self._project_save_as)
+        file_menu.add_separator()
+        file_menu.add_command(label="Export Manuscript…", command=self.export_document)
+        file_menu.add_separator()
+        file_menu.add_command(label="Quit",               command=self.destroy,            accelerator="Ctrl+Q")
+        menubar.add_cascade(label="File", menu=file_menu)
+        self.config(menu=menubar)
+        self.bind_all("<Control-n>", lambda _e: self._project_new())
+        self.bind_all("<Control-o>", lambda _e: self._project_open())
+        self.bind_all("<Control-s>", lambda _e: self._project_save())
+        self.bind_all("<Control-q>", lambda _e: self.destroy())
+        self._project_file: str | None = None
+
         # ── Header bar ──────────────────────────────────────────────
         header = tk.Frame(self, bg="#4c1d95")
         header.pack(fill=tk.X)
@@ -228,6 +247,8 @@ class BookPublishForgeApp(tk.Tk):
         self.draft_box = tk.Text(text_frame, height=14, wrap=tk.WORD, undo=True)
         self.draft_box.pack(fill=tk.BOTH, expand=True, pady=(6, 4))
         self.draft_box.bind("<KeyRelease>", lambda _e: self._update_stats())
+        # Ctrl+Enter → Write Next Paragraph without leaving the editor
+        self.draft_box.bind("<Control-Return>", lambda _e: (self._ai_write_next(), "break")[1])
 
         status_frame = ttk.Frame(text_frame)
         status_frame.pack(fill=tk.X, pady=(0, 8))
@@ -515,7 +536,20 @@ class BookPublishForgeApp(tk.Tk):
         text = self._ai_output_box.get("1.0", tk.END).strip()
         if not text:
             return
-        self.draft_box.insert(tk.END, "\n\n" + text)
+        # Insert at the current cursor position (INSERT mark); fall back to end
+        try:
+            insert_pos = self.draft_box.index(tk.INSERT)
+            # If cursor is at very start (1.0) and there's existing text, append
+            if insert_pos == "1.0" and self.draft_box.get("1.0", tk.END).strip():
+                insert_pos = tk.END
+                self.draft_box.insert(insert_pos, "\n\n" + text)
+            else:
+                # Insert a blank line separator unless already on a blank line
+                prefix = "" if self.draft_box.get(f"{insert_pos} linestart", insert_pos).strip() == "" else "\n\n"
+                self.draft_box.insert(insert_pos, prefix + text + "\n\n")
+                self.draft_box.mark_set(tk.INSERT, f"{insert_pos}+{len(prefix + text + chr(10) + chr(10))}c")
+        except tk.TclError:
+            self.draft_box.insert(tk.END, "\n\n" + text)
         self._save_current_scene()
         self._update_stats()
         self._add_audit("AI Writing", "Accepted AI output into draft.")
@@ -646,6 +680,104 @@ class BookPublishForgeApp(tk.Tk):
         self.audit_entries.append(entry)
         if hasattr(self, "audit_list"):
             self.audit_list.insert(tk.END, f"{entry.timestamp} | {entry.action} | {entry.details}")
+
+    # ── JSON project file (shared format with web app) ────────────────
+
+    def _project_to_dict(self) -> dict:
+        """Serialise the project to the shared JSON format (chapters → scenes → text)."""
+        self._save_current_scene()
+        return {
+            "version": 1,
+            "chapters": [
+                {
+                    "id": ch.id,
+                    "title": ch.title,
+                    "scenes": [
+                        {"id": sc.id, "title": sc.title, "text": sc.text}
+                        for sc in ch.scenes
+                    ],
+                }
+                for ch in self._project
+            ],
+        }
+
+    def _project_from_dict(self, data: dict):
+        """Load a project from the shared JSON format."""
+        self._project = []
+        for ch_data in data.get("chapters", []):
+            ch = Chapter(id=ch_data.get("id", ""), title=ch_data.get("title", "Untitled Chapter"))
+            for sc_data in ch_data.get("scenes", []):
+                ch.scenes.append(Scene(
+                    id=sc_data.get("id", ""),
+                    title=sc_data.get("title", "Untitled Scene"),
+                    text=sc_data.get("text", ""),
+                ))
+            if not ch.scenes:
+                ch.scenes.append(Scene(id="s1", title="Scene 1"))
+            self._project.append(ch)
+        if not self._project:
+            self._project = [Chapter(id="ch1", title="Chapter 1",
+                                     scenes=[Scene(id="s1", title="Opening Scene")])]
+        self._active_chapter_idx = 0
+        self._active_scene_idx = 0
+        self._refresh_binder()
+        self._load_current_scene()
+
+    def _project_new(self):
+        if not messagebox.askyesno("New Project", "Discard current project and start a new one?"):
+            return
+        self._project = [Chapter(id="ch1", title="Chapter 1",
+                                 scenes=[Scene(id="s1", title="Opening Scene")])]
+        self._active_chapter_idx = 0
+        self._active_scene_idx = 0
+        self._project_file = None
+        self.title("Book Publish Forge")
+        self._refresh_binder()
+        self._load_current_scene()
+        self._add_audit("Project", "Created new project.")
+
+    def _project_open(self):
+        filename = filedialog.askopenfilename(
+            title="Open Project",
+            filetypes=[("Book Publish Forge project", "*.bpf.json"), ("JSON files", "*.json"), ("All files", "*.*")],
+        )
+        if not filename:
+            return
+        try:
+            with open(filename, encoding="utf-8") as fh:
+                data = json.load(fh)
+            self._project_from_dict(data)
+            self._project_file = filename
+            self.title(f"Book Publish Forge — {os.path.basename(filename)}")
+            self._add_audit("Project", f"Opened project: {filename}.")
+        except Exception as exc:
+            messagebox.showerror("Open Project", f"Could not open project:\n{exc}")
+
+    def _project_save(self):
+        if not self._project_file:
+            self._project_save_as()
+            return
+        self._write_project_file(self._project_file)
+
+    def _project_save_as(self):
+        filename = filedialog.asksaveasfilename(
+            title="Save Project As",
+            defaultextension=".bpf.json",
+            filetypes=[("Book Publish Forge project", "*.bpf.json"), ("JSON files", "*.json"), ("All files", "*.*")],
+        )
+        if not filename:
+            return
+        self._project_file = filename
+        self.title(f"Book Publish Forge — {os.path.basename(filename)}")
+        self._write_project_file(filename)
+
+    def _write_project_file(self, filename: str):
+        try:
+            with open(filename, "w", encoding="utf-8") as fh:
+                json.dump(self._project_to_dict(), fh, ensure_ascii=False, indent=2)
+            self._add_audit("Project", f"Saved project: {filename}.")
+        except Exception as exc:
+            messagebox.showerror("Save Project", f"Could not save project:\n{exc}")
 
 
 if __name__ == "__main__":

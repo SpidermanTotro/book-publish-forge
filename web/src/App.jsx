@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import ManuscriptEditor        from './editor/ManuscriptEditor.jsx'
 import AIAgentPanel            from './ai/AIAgentPanel.jsx'
 import AIBeatSceneGeneratorPanel from './ai/AIBeatSceneGeneratorPanel.jsx'
 import AIHelperPanel           from './ai/AIHelperPanel.jsx'
@@ -20,6 +21,12 @@ import WritingCoachPanel from './writing/WritingCoachPanel.jsx'
 import CollabPanel       from './writing/CollabPanel.jsx'
 
 const TOOL_GROUPS = [
+  {
+    label: 'Editor',
+    tools: [
+      { id: 'editor', label: 'Manuscript Editor', icon: '✍️', component: ManuscriptEditor, fullHeight: true },
+    ],
+  },
   {
     label: 'AI Writing Tools',
     tools: [
@@ -52,7 +59,7 @@ const TOOL_GROUPS = [
 const ALL_TOOLS = TOOL_GROUPS.flatMap(g => g.tools)
 
 export default function App() {
-  const [activeId,    setActiveId]    = useState('beat')
+  const [activeId,    setActiveId]    = useState('editor')
   const [theme,       setTheme]       = useState('light')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -67,7 +74,9 @@ export default function App() {
     setSidebarOpen(false)
   }
 
-  const ActiveTool = ALL_TOOLS.find(t => t.id === activeId)?.component ?? null
+  const activeTool = ALL_TOOLS.find(t => t.id === activeId) ?? null
+  const ActiveTool = activeTool?.component ?? null
+  const isFullHeight = activeTool?.fullHeight === true
 
   return (
     <div className="app-layout">
@@ -119,10 +128,14 @@ export default function App() {
         )}
 
         {/* Main content */}
-        <main className="app-main">
-          <div className="app-main__inner">
-            {ActiveTool && <ActiveTool />}
-          </div>
+        <main className={`app-main${isFullHeight ? ' app-main--full-height' : ''}`}>
+          {isFullHeight ? (
+            ActiveTool && <ActiveTool />
+          ) : (
+            <div className="app-main__inner">
+              {ActiveTool && <ActiveTool />}
+            </div>
+          )}
         </main>
       </div>
     </div>

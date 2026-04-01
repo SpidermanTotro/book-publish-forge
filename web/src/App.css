@@ -166,6 +166,13 @@
   background: var(--surface-base);
 }
 
+/* Full-height variant: no scroll, fills body, used by ManuscriptEditor */
+.app-main--full-height {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .app-main__inner {
   max-width: 860px;
   margin: 0 auto;

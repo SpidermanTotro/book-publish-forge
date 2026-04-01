@@ -1,18 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AIToolShell from '../shared/AIToolShell.jsx'
 
 const MODES = ['Next sentence', 'Next paragraph', 'Next scene beat', 'Dialogue continuation', 'Description expansion']
 
 export default function InlineAISuggestPanel({ text = '', onAccept, context: _context = {} }) {
-  const [mode, setMode]       = useState('Next sentence')
-  const [output, setOutput]   = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState(null)
+  const [mode, setMode]         = useState('Next sentence')
+  const [textInput, setTextInput] = useState(text)
+  const [output, setOutput]     = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
+
+  // Keep local context in sync with the editor's text when it changes
+  useEffect(() => { setTextInput(text) }, [text])
 
   async function suggest() {
     setLoading(true); setError(null); setOutput('')
     try {
       await new Promise(r => setTimeout(r, 750))
+      const ctx = textInput.trim()
       const map = {
         'Next sentence':         `She paused at the threshold, one hand resting on the door frame, fingers tracing the familiar grain of the wood.`,
         'Next paragraph':        `The silence stretched between them like a held breath. Outside, rain had begun to fall in thin, persistent sheets, drumming against the window panes with quiet insistence. Neither of them moved to speak first.`,
@@ -20,7 +25,7 @@ export default function InlineAISuggestPanel({ text = '', onAccept, context: _co
         'Dialogue continuation': `"You knew," she said, not as an accusation but as a statement of tired fact. "You knew the whole time, and you let me believe otherwise."`,
         'Description expansion': `The room exhaled dust and old paper. Shelves lined three walls from floor to ceiling, crammed with volumes whose spines had faded to illegibility, their titles lost to time and light.`,
       }
-      setOutput(map[mode] || `[AI Suggestion — ${mode}]\nFollowing your current writing: "${(text || '(start your story!)').slice(0, 80)}…"`)
+      setOutput(map[mode] || `[AI Suggestion — ${mode}]\nFollowing your current writing: "${(ctx || '(start your story!)').slice(0, 80)}…"`)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -38,16 +43,20 @@ export default function InlineAISuggestPanel({ text = '', onAccept, context: _co
   )
 
   const extraActions = output ? (
-    <button className="btn btn--secondary btn--sm" onClick={() => onAccept?.(output)}>
-      ✓ Accept &amp; Insert
+    <button className="btn btn--secondary btn--sm" onClick={() => { onAccept?.(output); setOutput('') }}>
+      ✓ Insert into Editor
     </button>
   ) : null
+
+  const description = onAccept
+    ? 'Generate a continuation, then click "Insert into Editor" to place it at your cursor.'
+    : 'Context-aware continuations — next sentence, paragraph, scene beat, or dialogue.'
 
   return (
     <AIToolShell
       icon="💡"
       title="Inline AI Suggestions"
-      description="Context-aware continuations — next sentence, paragraph, scene beat, or dialogue."
+      description={description}
       badge="Inline AI"
       controls={controls}
       loading={loading}
@@ -56,7 +65,7 @@ export default function InlineAISuggestPanel({ text = '', onAccept, context: _co
       outputLabel="AI Suggestion"
       emptyIcon="💡"
       emptyTitle="Awaiting your writing"
-      emptyHint="Choose a suggestion mode and click Ask AI."
+      emptyHint={onAccept ? 'Ask AI to continue, then click Insert into Editor.' : 'Choose a suggestion mode and click Ask AI.'}
       onGenerate={suggest}
       onRegenerate={suggest}
       onClear={() => setOutput('')}
@@ -64,8 +73,14 @@ export default function InlineAISuggestPanel({ text = '', onAccept, context: _co
       extraActions={extraActions}
     >
       <div className="field">
-        <label className="field__label">Your current text (optional context)</label>
-        <textarea className="field__textarea" rows={4} defaultValue={text} placeholder="Paste what you've written so far…" />
+        <label className="field__label">Your current text (context)</label>
+        <textarea
+          className="field__textarea"
+          rows={4}
+          value={textInput}
+          onChange={e => setTextInput(e.target.value)}
+          placeholder="Paste what you've written so far…"
+        />
       </div>
     </AIToolShell>
   )
