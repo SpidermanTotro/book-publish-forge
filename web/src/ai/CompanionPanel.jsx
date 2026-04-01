@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import AIToolShell from '../shared/AIToolShell.jsx'
 
+const INACTIVITY_THRESHOLD_MINUTES = 6
+
 export default function CompanionPanel({ isOnline = true, onOfflinePrompt }) {
   const [inactivity, setInactivity] = useState(0)
   const [output, setOutput]         = useState('')
@@ -13,7 +15,7 @@ export default function CompanionPanel({ isOnline = true, onOfflinePrompt }) {
   }, [])
 
   useEffect(() => {
-    if (inactivity > 6 && !output) {
+    if (inactivity > INACTIVITY_THRESHOLD_MINUTES && !output) {
       setOutput("You've been away for a while — want a quick warm-up prompt or scene review?")
       onOfflinePrompt?.()
     }
