@@ -100,7 +100,9 @@ export default function WorldGraphPanel({ world, setWorld, scenes = [], onJumpTo
           // Draw circle
           ctx.beginPath();
           ctx.arc(node.x, node.y, 22, 0, 2 * Math.PI, false);
-          ctx.fillStyle = node.type === "location" ? "#3681d2" : "#b14";
+          const LOCATION_COLOR = "#3681d2";
+          const CHARACTER_COLOR = "#b14";
+          ctx.fillStyle = node.type === "location" ? LOCATION_COLOR : CHARACTER_COLOR;
           ctx.globalAlpha = 0.18;
           ctx.fill();
           ctx.globalAlpha = 1.0;

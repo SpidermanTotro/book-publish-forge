@@ -27,7 +27,12 @@ export default function UpgradeNotifier() {
       background: "#d6f7cc", border: "2px solid #7d5", borderRadius: 10,
       position: "fixed", top: 20, right: 20, padding: 20, zIndex: 1000
     }}>
-      <b>App Updated!</b> Please <a href="" onClick={e => { e.preventDefault(); window.location.reload(); }}>reload</a> to use the latest features.
+      <b>App Updated!</b> Please{" "}
+      <button
+        style={{ background: "none", border: "none", textDecoration: "underline", cursor: "pointer", color: "inherit", padding: 0, font: "inherit" }}
+        onClick={() => window.location.reload()}
+      >reload</button>{" "}
+      to use the latest features.
     </div>
   );
 }
