@@ -1,0 +1,199 @@
+/* ── App layout ─────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--surface-base);
+}
+
+/* ── Navbar ─────────────────────────────────────────────── */
+.app-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 var(--space-6);
+  background: var(--color-brand-900);
+  border-bottom: 1px solid var(--color-brand-800);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-raised);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.app-navbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-navbar__logo {
+  font-size: var(--text-xl);
+}
+
+.app-navbar__name {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.app-navbar__sub {
+  font-size: var(--text-xs);
+  color: var(--color-brand-300);
+  padding: 1px var(--space-2);
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+.app-navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-navbar__theme-btn {
+  color: var(--color-brand-200) !important;
+  border-color: var(--color-brand-700) !important;
+}
+.app-navbar__theme-btn:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+}
+
+.app-navbar__menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--color-brand-200);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xl);
+  line-height: 1;
+}
+.app-navbar__menu-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* ── Body ──────────────────────────────────────────────── */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Sidebar ───────────────────────────────────────────── */
+.app-sidebar {
+  width: 224px;
+  flex-shrink: 0;
+  background: var(--surface-raised);
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.app-sidebar__label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  padding: var(--space-2) var(--space-3);
+}
+
+.app-sidebar__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.app-sidebar__item:hover { background: var(--surface-inset); color: var(--text-primary); }
+.app-sidebar__item--active {
+  background: var(--color-brand-50);
+  color: var(--color-brand-700);
+  font-weight: 600;
+}
+[data-theme="dark"] .app-sidebar__item--active {
+  background: color-mix(in srgb, var(--color-brand-900) 30%, var(--surface-raised));
+  color: var(--color-brand-300);
+}
+
+.app-sidebar__item-icon { font-size: var(--text-lg); flex-shrink: 0; }
+.app-sidebar__item-label { flex: 1; }
+
+/* ── Main ──────────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface-base);
+}
+
+.app-main__inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+/* ── Backdrop ──────────────────────────────────────────── */
+.app-sidebar-backdrop {
+  display: none;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-navbar__menu-btn { display: flex; }
+  .app-navbar__sub { display: none; }
+
+  .app-sidebar {
+    position: fixed;
+    left: -240px;
+    top: 60px;
+    bottom: 0;
+    z-index: var(--z-overlay);
+    width: 240px;
+    transition: left var(--transition-base);
+    box-shadow: var(--shadow-xl);
+  }
+  .app-sidebar--open { left: 0; }
+
+  .app-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 60px 0 0;
+    background: var(--surface-overlay);
+    z-index: calc(var(--z-overlay) - 1);
+    backdrop-filter: blur(2px);
+  }
+
+  .app-main__inner {
+    padding: var(--space-4);
+  }
+}
