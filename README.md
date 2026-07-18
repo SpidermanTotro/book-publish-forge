@@ -12,13 +12,21 @@ A modular, ethical, all-in-one Linux desktop program for writing, publishing, an
 - **Works offline with local AI integrations**
 - **Local LLM + image generator integration (Ollama + Stable Diffusion WebUI compatible)**
 
-See `/components` for all functional modules!
+The current default branch contains the native Tkinter desktop app. The historical
+React prototype remains preserved in `files (2).zip`; it is not installed, tested,
+or part of the supported app.
 
 ## Quick Start
 
-Clone & install (Linux RPM):
+Run the current desktop app from a checkout:
 ```bash
-book-publish-forge
+python3 app/book_publish_forge_app.py
+```
+
+Build the Fedora RPM (requires `rpmbuild`):
+
+```bash
+./packaging/fedora/build-rpm.sh
 ```
 
 Run diagnostics (checks local dependencies and AI endpoints):

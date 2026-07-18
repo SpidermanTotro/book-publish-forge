@@ -8,6 +8,27 @@ from urllib.error import URLError
 
 DEFAULT_OLLAMA_URL = os.environ.get("BOOK_PUBLISH_FORGE_OLLAMA_URL", "http://127.0.0.1:11434")
 DEFAULT_IMAGE_URL = os.environ.get("BOOK_PUBLISH_FORGE_IMAGE_URL", "http://127.0.0.1:7860")
+EROTIC_KEYWORDS = ("kiss", "touch", "desire", "naked", "passion", "intimate")
+
+
+def classify_mode(content: str) -> str:
+    """Classify draft text using the desktop app's lightweight local heuristic."""
+    lowered = content.casefold()
+    return "Erotic" if any(word in lowered for word in EROTIC_KEYWORDS) else "Normal"
+
+
+def convert_text(content: str, target: str) -> str:
+    """Apply the app's deterministic, offline text substitutions."""
+    if target == "erotic":
+        return content.replace("smile", "lingering smile").replace("hug", "slow embrace")
+    if target == "normal":
+        return content.replace("naked", "bare").replace("touch", "contact").replace("passion", "emotion")
+    raise ValueError(f"Unsupported conversion target: {target}")
+
+
+def build_endpoint_url(base_url: str, path: str) -> str:
+    """Join a configured local service base URL and API path."""
+    return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
 
 
 @dataclass
@@ -217,9 +238,7 @@ class BookPublishForgeApp(tk.Tk):
         if not content:
             messagebox.showinfo("Detect Mode", "Paste or type your draft first.")
             return
-        lowered = content.lower()
-        erotic_keywords = ["kiss", "touch", "desire", "naked", "passion", "intimate"]
-        mode = "Erotic" if any(word in lowered for word in erotic_keywords) else "Normal"
+        mode = classify_mode(content)
         self.mode.set(mode)
         self._add_audit("Mode Detection", f"Classified document as {mode}.")
 
@@ -235,13 +254,10 @@ class BookPublishForgeApp(tk.Tk):
             messagebox.showinfo("Convert", "Paste or type your draft first.")
             return
         if target == "erotic":
-            converted = content.replace("smile", "lingering smile").replace("hug", "slow embrace")
             action = "Converted to Erotic"
         else:
-            converted = (
-                content.replace("naked", "bare").replace("touch", "contact").replace("passion", "emotion")
-            )
             action = "Converted to Normal"
+        converted = convert_text(content, target)
         self.convert_box.delete("1.0", tk.END)
         self.convert_box.insert(tk.END, converted)
         self._add_audit("Conversion", action)
@@ -275,7 +291,7 @@ class BookPublishForgeApp(tk.Tk):
         self.image_status.set(self._probe_url(self.image_url.get(), "/sdapi/v1/options"))
 
     def _probe_url(self, base_url: str, path: str) -> str:
-        url = f"{base_url}{path}"
+        url = build_endpoint_url(base_url, path)
         try:
             with request.urlopen(url, timeout=3) as response:
                 if response.status == 200:
