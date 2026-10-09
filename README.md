@@ -12,9 +12,10 @@ A modular, ethical, all-in-one Linux desktop program for writing, publishing, an
 - **Works offline with local AI integrations**
 - **Local LLM + image generator integration (Ollama + Stable Diffusion WebUI compatible)**
 
-The current default branch contains the native Tkinter desktop app. The historical
-React prototype remains preserved in `files (2).zip`; it is not installed, tested,
-or part of the supported app.
+The supported app is the native Tkinter desktop application. The separate React
+web prototype is included under `web/` on this development branch, but is
+**experimental and not production-verified**. Cloud inference and automated
+external sharing are disabled in the local-only prototype.
 
 ## Quick Start
 
@@ -47,3 +48,18 @@ book-publish-forge
 ---
 
 © 2025 Book Publish Forge Team — Safe, creative, and ethical AI for every story.
+
+## Experimental web prototype (not production verified)
+
+The React application lives in `web/`. For development with an existing Node.js installation:
+
+```bash
+cd web
+npm ci
+npm test -- --watch=false --runInBand
+npm run build
+```
+
+Only connect to a locally running Ollama instance. It does not need or accept OpenAI/cloud API keys. The browser-backup control uses browser storage, **not cloud synchronization**, and live WebRTC collaboration is disabled. Manual file exports are needed for durable backups.
+
+The web UI retains early demonstration components; advertised features are not proof of implemented backend services. Prefer the desktop app for your working book manuscripts until the web CI and privacy checks are complete.
