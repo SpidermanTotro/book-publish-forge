@@ -171,7 +171,7 @@ Provide 5-7 key story beats that create a compelling narrative arc. Format as a 
   return await callAI(prompt, { ...options, temperature: 0.8 });
 }
 
-export default {
+const aiService = {
   callAI,
   checkAIAvailability,
   convertToErotic,
@@ -182,3 +182,5 @@ export default {
   generateStoryBeats,
   config: AI_CONFIG
 };
+
+export default aiService;
