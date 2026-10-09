@@ -3,7 +3,7 @@ import { convertToErotic, convertToNormal, detectContentType } from "../services
 
 /**
  * REAL AI-POWERED Content Converter
- * Uses actual LLMs (Ollama or OpenAI) instead of simple regex
+ * Uses the locally installed Ollama LLM instead of simple regex
  */
 export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
   const [preview, setPreview] = useState("");
@@ -91,7 +91,7 @@ export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
       <div style={{color:"#888", padding: 16, background: "#f9f9f9", borderRadius: 8}}>
         <p>📝 Paste your document to begin AI-powered mode detection and conversion...</p>
         <p style={{fontSize: "0.9em", color: "#666"}}>
-          Powered by real language models (Ollama or OpenAI)
+          Powered by local Ollama
         </p>
       </div>
     );
@@ -127,7 +127,7 @@ export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
         }}>
           ⚠️ {error}
           <div style={{fontSize: "0.85em", marginTop: 6}}>
-            Tip: Make sure Ollama is running or configure OpenAI API key
+            Tip: Make sure Ollama is running on your PC
           </div>
         </div>
       )}
@@ -207,7 +207,7 @@ export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
         background: "#f9fafb",
         borderRadius: 4
       }}>
-        💡 <b>Powered by Real AI:</b> Using {AI_CONFIG.backend === 'ollama' ? 'Ollama (local)' : 'OpenAI (cloud)'} for intelligent content transformation
+        💡 <b>Powered by Real AI:</b> Using Ollama (local) for intelligent content transformation
       </div>
     </div>
   );
@@ -215,6 +215,6 @@ export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
 
 // Export config for UI display
 const AI_CONFIG = {
-  backend: process.env.REACT_APP_AI_BACKEND || 'ollama',
-  model: process.env.REACT_APP_OLLAMA_MODEL || 'dolphin-mixtral'
+  backend: 'ollama',
+  model: process.env.REACT_APP_OLLAMA_MODEL || 'qwen3:8b'
 };
