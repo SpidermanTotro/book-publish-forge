@@ -1,19 +1,13 @@
-import React, { useState } from "react";
-export default function ExportToCloudPanel({ project }) {
-  const [provider, setProvider] = useState("s3");
-  async function upload() {
-    // Replace with your upload logic per provider/API
-    alert("Uploading " + (project.name||"project") + " to " + provider.toUpperCase());
-  }
+import React from "react";
+
+/** Remote uploads are intentionally unavailable in the local-only prototype. */
+export default function ExportToCloudPanel() {
   return (
-    <div style={{marginTop:15}}>
-      <b>Save to Cloud:</b>
-      <select value={provider} onChange={e=>setProvider(e.target.value)} style={{marginLeft:10}}>
-        <option value="s3">Amazon S3</option>
-        <option value="gdrive">Google Drive</option>
-        <option value="dropbox">Dropbox</option>
-      </select>
-      <button style={{marginLeft:13}} onClick={upload}>Upload Export</button>
-    </div>
+    <section style={{ marginTop: 15 }} aria-label="Cloud export status">
+      <strong>Cloud export is disabled</strong>
+      <p>Book Publish Forge does not upload manuscripts to an external
+        storage provider in this local-only build. Use Export to File
+        for a backup that stays under your control.</p>
+    </section>
   );
 }
