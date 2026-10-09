@@ -213,8 +213,3 @@ export default function NaughtyConverterAI({ doc, setMode, mode, onConvert }) {
   );
 }
 
-// Export config for UI display
-const AI_CONFIG = {
-  backend: 'ollama',
-  model: process.env.REACT_APP_OLLAMA_MODEL || 'qwen3:8b'
-};
