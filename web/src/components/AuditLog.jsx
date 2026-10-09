@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 export default function AuditLog({ initialEntries = [] }) {
-  const [entries] = useState(initialEntries);
-
-  // Function to add log entries (can be used by parent components)
-  // Removed local addLog function as entries are now managed externally
+  // Parent owns the audit entries; prop changes must render immediately.
+  const entries = initialEntries;
 
   return (
     <div style={{
