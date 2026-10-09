@@ -1,138 +1,58 @@
 /**
- * AI Service Integration
- * 
- * Supports multiple AI backends:
- * 1. Ollama (local, privacy-first) - matches desktop app
- * 2. OpenAI API (cloud-based)
- * 3. Custom API endpoint
+ * Book Publish Forge web AI: local-only Ollama.
+ *
+ * Browser bundles must never contain provider API keys; remote inference is
+ * deliberately disabled. A future cloud mode requires separate opt-in design.
  */
+const DEFAULT_OLLAMA_URL = 'http://127.0.0.1:11434';
+const DEFAULT_MODEL = 'qwen3:8b';
 
-// Configuration from environment or defaults
-const AI_CONFIG = {
-  // Ollama (local, like desktop app)
-  ollamaUrl: process.env.REACT_APP_OLLAMA_URL || 'http://127.0.0.1:11434',
-  ollamaModel: process.env.REACT_APP_OLLAMA_MODEL || 'dolphin-mixtral',
-  
-  // OpenAI (cloud, requires API key)
-  openaiKey: process.env.REACT_APP_OPENAI_KEY || '',
-  openaiModel: process.env.REACT_APP_OPENAI_MODEL || 'gpt-4',
-  
-  // Preferred backend: 'ollama' | 'openai' | 'custom'
-  backend: process.env.REACT_APP_AI_BACKEND || 'ollama',
-  
-  // Custom API endpoint
-  customUrl: process.env.REACT_APP_CUSTOM_AI_URL || '',
-};
-
-/**
- * Call Ollama API (local LLM)
- */
-async function callOllama(prompt, options = {}) {
-  const { model = AI_CONFIG.ollamaModel, temperature = 0.7, stream = false } = options;
-  
-  try {
-    const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        prompt,
-        temperature,
-        stream
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data.response || '';
-  } catch (error) {
-    console.error('Ollama API failed:', error);
-    throw new Error(`Ollama unavailable. Make sure Ollama is running at ${AI_CONFIG.ollamaUrl}`);
+function localConfig() {
+  const read = key => {
+    try { return window.localStorage.getItem(key); } catch { return null; }
+  };
+  const base = read('ollama_url') || process.env.REACT_APP_OLLAMA_URL || DEFAULT_OLLAMA_URL;
+  const url = new URL(base);
+  if (!['http:', 'https:'].includes(url.protocol) ||
+      !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname) ||
+      url.username || url.password || url.search || url.hash) {
+    throw new Error('Only loopback Ollama addresses are supported; no remote inference.');
   }
+  return {
+    ollamaUrl: url.origin,
+    ollamaModel: read('ollama_model') || process.env.REACT_APP_OLLAMA_MODEL || DEFAULT_MODEL,
+    backend: 'ollama'
+  };
 }
 
-/**
- * Call OpenAI API (cloud LLM)
- */
-async function callOpenAI(prompt, options = {}) {
-  const { model = AI_CONFIG.openaiModel, temperature = 0.7, maxTokens = 500 } = options;
-  
-  if (!AI_CONFIG.openaiKey) {
-    throw new Error('OpenAI API key not configured. Set REACT_APP_OPENAI_KEY environment variable.');
-  }
-  
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_CONFIG.openaiKey}`
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-        temperature,
-        max_tokens: maxTokens
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data.choices[0]?.message?.content || '';
-  } catch (error) {
-    console.error('OpenAI API failed:', error);
-    throw error;
-  }
-}
+const AI_CONFIG = { backend: 'ollama', ollamaUrl: DEFAULT_OLLAMA_URL, ollamaModel: DEFAULT_MODEL };
 
-/**
- * Main AI call function - automatically uses configured backend
- */
 export async function callAI(prompt, options = {}) {
-  const { backend = AI_CONFIG.backend } = options;
-  
-  switch (backend) {
-    case 'ollama':
-      return await callOllama(prompt, options);
-    case 'openai':
-      return await callOpenAI(prompt, options);
-    case 'custom':
-      if (!AI_CONFIG.customUrl) {
-        throw new Error('Custom AI URL not configured');
-      }
-      // Implement custom endpoint call here
-      throw new Error('Custom backend not yet implemented');
-    default:
-      throw new Error(`Unknown AI backend: ${backend}`);
+  if (options.backend && options.backend !== 'ollama') {
+    throw new Error('Cloud and custom AI backends are disabled in this local-only build.');
   }
+  const config = localConfig();
+  const { model = config.ollamaModel, temperature = 0.7 } = options;
+  const response = await fetch(config.ollamaUrl + '/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model, prompt, options: { temperature }, stream: false })
+  });
+  if (!response.ok) throw new Error('Local Ollama request failed (HTTP ' + response.status + ')');
+  const result = await response.json();
+  return result.response || '';
 }
 
-/**
- * Check if AI service is available
- */
-export async function checkAIAvailability(backend = AI_CONFIG.backend) {
+export async function checkAIAvailability(backend = 'ollama') {
+  if (backend !== 'ollama') return false;
   try {
-    if (backend === 'ollama') {
-      const response = await fetch(`${AI_CONFIG.ollamaUrl}/api/tags`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(3000)
-      });
-      return response.ok;
-    } else if (backend === 'openai') {
-      return !!AI_CONFIG.openaiKey;
-    }
-    return false;
-  } catch {
-    return false;
-  }
+    const config = localConfig();
+    const response = await fetch(config.ollamaUrl + '/api/tags', {
+      method: 'GET',
+      signal: AbortSignal.timeout(3000)
+    });
+    return response.ok;
+  } catch { return false; }
 }
 
 /**
