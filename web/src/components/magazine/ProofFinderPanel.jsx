@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 export default function ProofFinderPanel({ article, lastScan, results, onRescan }) {
   return (
     <div style={{background:"#effaf6",border:"1.6px solid #bbc",borderRadius:9,padding:15,maxWidth:650}}>
