@@ -46,7 +46,7 @@ export default function Dashboard() {
         { name: "Team Management", path: "/collab/team", desc: "Manage collaborators" },
         { name: "Writing Room", path: "/collab/chat", desc: "Real-time chat" },
         { name: "Revision History", path: "/collab/revisions", desc: "Track changes" },
-        { name: "Cloud Sync", path: "/cloud", desc: "Cloud synchronization" },
+        { name: "Local Backup", path: "/cloud", desc: "Browser backup and file export" },
       ]
     },
     {
