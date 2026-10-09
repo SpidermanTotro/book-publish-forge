@@ -101,7 +101,7 @@ export default function MasterForgeModuleAI() {
           📚 Book Publish Forge - AI Edition
         </h1>
         <p style={{margin: "8px 0 0 0", fontSize: "1.1em", opacity: 0.95}}>
-          Real AI-powered content transformation using Ollama or OpenAI
+          AI-assisted content transformation using local Ollama
         </p>
       </div>
 
@@ -197,7 +197,7 @@ export default function MasterForgeModuleAI() {
           <li><b>Conversion:</b> Advanced prompts guide the LLM to transform style professionally</li>
           <li><b>Ethics:</b> AI checks for privacy violations, objectification, and misinformation</li>
           <li><b>Local Option:</b> Use Ollama for 100% privacy (content never leaves your machine)</li>
-          <li><b>Cloud Option:</b> Use OpenAI for more powerful models (requires API key)</li>
+          <li><b>Cloud inference:</b> Disabled in this local-only prototype.</li>
         </ul>
       </div>
     </div>
