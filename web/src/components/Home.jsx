@@ -12,11 +12,7 @@ export default function Home() {
         maxWidth: 650, margin: "0 auto", padding: "54px 24px 42px 24px", borderRadius: 20, boxShadow: "0 8px 40px #a68eb81e", background: "#fff", marginTop: 80
       }}>
         <div style={{display: "flex", alignItems: "center", gap: 18, marginBottom: 22}}>
-          <img
-            src="https://emojicdn.elk.sh/📚?style=apple"
-            alt="Book Forge"
-            style={{width:48, height:48, filter: "drop-shadow(1px 3px 8px #be79ef2d)"}}
-          />
+          <span aria-hidden="true" style={{fontSize:48, lineHeight:1}}>📚</span>
           <div>
             <h1 style={{margin: 0, fontSize: "2.7em", letterSpacing:0.5}}>Book Publish Forge</h1>
             <div style={{color:"#6e3793", fontWeight: 500}}>Unleash creativity, ethics, and consent-first publishing</div>
@@ -38,7 +34,7 @@ export default function Home() {
         </div>
         <div style={{marginTop:38, fontSize: "1.02em", color:"#555379"}}>
           <b>Respect. Empowerment. Transparency.</b> <br/>
-          Every creation is <span style={{color:"#34ad81", fontWeight:500}}>audit-safe</span> and <span style={{color:"#b9357f", fontWeight:500}}>consent-powered</span>.
+          Review story changes, consent notes, and exports with local tools.
         </div>
       </div>
     </div>
