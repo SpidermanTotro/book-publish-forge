@@ -38,7 +38,7 @@ export default function Navigation() {
       items: [
         { name: "Export Wizard", path: "/export" },
         { name: "Export Panel", path: "/export/panel" },
-        { name: "Export to Cloud", path: "/export/cloud" },
+        { name: "Cloud Export (Disabled)", path: "/export/cloud" },
       ]
     },
     {
