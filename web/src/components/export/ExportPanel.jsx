@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 // You may use: npm install jszip file-saver
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
