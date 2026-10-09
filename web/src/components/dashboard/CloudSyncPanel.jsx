@@ -6,27 +6,27 @@ import React, { useRef } from "react";
  * - onLoadCloud: (projectData) => void
  * - onSaveCloud: (projectData) => void or Promise
  */
-export default function CloudSyncPanel({ project, onLoadCloud, onSaveCloud }) {
+export default function LocalBackupPanel({ project, onLoadCloud, onSaveCloud }) {
   const fileInput = useRef();
 
-  // Simulate cloud save/load (replace with real API for production)
+  // Temporary browser-only backup; never uploads anything
   const handleSaveCloud = () => {
-    // Simulate cloud save—would POST to server/cloud
+    // Save to this browser profile only; not an off-device backup
     localStorage.setItem("cloudProjectBackup", JSON.stringify(project));
     if (onSaveCloud) onSaveCloud(project);
-    alert("Project saved to the cloud!");
+    alert("Saved in this browser only. Export a file for a durable backup.");
   };
   const handleLoadCloud = () => {
     // Simulate cloud load—would GET from server/cloud
     const data = localStorage.getItem("cloudProjectBackup");
     if (!data) {
-      alert("No cloud project found.");
+      alert("No browser backup found.");
       return;
     }
     try {
       const loaded = JSON.parse(data);
       if (onLoadCloud) onLoadCloud(loaded);
-      alert("Project loaded from the cloud!");
+      alert("Loaded from this browser's storage.");
     } catch {
       alert("Invalid cloud backup data.");
     }
@@ -60,10 +60,10 @@ export default function CloudSyncPanel({ project, onLoadCloud, onSaveCloud }) {
 
   return (
     <div style={{ margin: "21px 0", background: "#f3f5fa", border: "1px solid #dde", borderRadius: 8, padding: 18, display: "inline-block" }}>
-      <b>Cloud & Backup Controls:</b>
+      <b>Local Backup Controls:</b>
       <div style={{ marginTop: 12 }}>
-        <button onClick={handleSaveCloud} style={{ marginRight: 14 }}>Save to Cloud</button>
-        <button onClick={handleLoadCloud} style={{ marginRight: 14 }}>Load from Cloud</button>
+        <button onClick={handleSaveCloud} style={{ marginRight: 14 }}>Save in Browser</button>
+        <button onClick={handleLoadCloud} style={{ marginRight: 14 }}>Load from Browser</button>
         <button onClick={handleExport} style={{ marginRight: 14 }}>Export to File</button>
         <input
           ref={fileInput}
